@@ -1,7 +1,7 @@
 import sys
 import random 
 import time 
-# import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt 
 
 class GeneticAlgorithm():
 
@@ -69,7 +69,7 @@ class GeneticAlgorithm():
         self.d = d          # Ma trận khoảng cách   
         # self.population = self.generate_initial_population()   # Khởi tạo thế hệ đầu tiên
         # start = time.time()
-        self.population = self.generate_initial_population()+self.generate_initial_population()
+        self.population = self.generate_greedy_initial_population()+self.generate_initial_population()
         # end = time.time()
         # self.time += start - end 
 
@@ -242,6 +242,7 @@ class GeneticAlgorithm():
     #Con: [0, 8, 9, 6, 0, 3, 4, 5, 0, 1, 2, 9, 0]
 
         def validate(child, not_added, start, end):   # Kiểm tra trùng lặp trong cá thể hậu crossover và thêm node chưa được thêm vào cá thể
+            duplicated = set()
             for i in range (start, end):           # Các node trong khoảng crossover sẽ được giữ nguyên
                 not_added.remove(child[i])
             for i in range (start):             # Các node còn lại sẽ được kiểm tra và chỉnh sửa
@@ -250,20 +251,27 @@ class GeneticAlgorithm():
                 if child[i] in not_added:
                     not_added.remove(child[i])
                 else:
-                    for node in not_added:
-                        child[i] = node
-                        not_added.remove(node)
-                        break
+                    duplicated.add(i)
+                #     for node in not_added:
+                #         child[i] = node
+                #         not_added.remove(node)
+                #         break
             for i in range (end, length):
                 if child[i] == 0:
                     continue 
                 if child[i] in not_added:
                     not_added.remove(child[i])
                 else:
-                    for node in not_added:
-                        child[i] = node
-                        not_added.remove(node)
-                        break
+                    duplicated.add(i)
+                #     for node in not_added:
+                #         child[i] = node
+                #         not_added.remove(node)
+                #         break
+            for idx in duplicated:
+                for value in not_added:
+                    child[idx] = value 
+                    not_added.remove(value)
+                    break
             return child
         
         child_0 = validate(child_0, not_added_0, start_0, end_0)
@@ -389,11 +397,11 @@ class GeneticAlgorithm():
 
 
 if __name__ == "__main__":
-    ga = GeneticAlgorithm(generations=10000, population_size=500, mutation_rate=0.002, keep_parents=100, time_limit=10)
-    # ga.load_input_file("inputs/input8.txt")
-    ga.load_input_line()
+    ga = GeneticAlgorithm(generations=10000, population_size=500, mutation_rate=0.002, keep_parents=100, time_limit=30)
+    ga.load_input_file("inputs/input10.txt")
+    # ga.load_input_line()
     # ga.parse_output()
-    best_score, best_solution, epochs, best_generation = ga.run(verbose=0)
+    best_score, best_solution, epochs, best_generation = ga.run(verbose=1)
     # scores = ga.evaluate(10)
     # scores = np.array(scores)
     # print(f"Mean: {np.mean(scores)}")
@@ -411,6 +419,6 @@ if __name__ == "__main__":
             print(toPrint[j], end = " ")
         print()
     # print(ga.best_score)
-    # plt.plot(ga.history)
-    # plt.show()
+    plt.plot(ga.history)
+    plt.show()
     # print(ga.fitness([0, 117, 176, 197, 21, 22, 59, 165, 108, 152, 175, 190, 157, 193, 196, 106, 9, 184, 49, 58, 142, 0, 81, 39, 150, 101, 76, 90, 5, 164, 137, 166, 168, 67, 177, 181, 92, 155, 1, 13, 186, 151, 0, 80, 170, 37, 118, 14, 167, 200, 85, 29, 124, 112, 104, 2, 119, 73, 139, 15, 57, 62, 178, 0, 27, 143, 146, 149, 154, 75, 60, 173, 127, 7, 158, 129, 126, 19, 61, 147, 187, 189, 3, 11, 0, 17, 4, 51, 98, 38, 169, 141, 102, 199, 71, 99, 74, 195, 172, 132, 53, 83, 153, 100, 180, 0, 183, 145, 12, 87, 113, 140, 148, 30, 95, 174, 36, 188, 35, 20, 24, 78, 128, 31, 6, 16, 0, 32, 120, 91, 93, 103, 116, 8, 10, 18, 23, 25, 26, 159, 194, 171, 77, 28, 33, 40, 42, 0, 41, 45, 50, 34, 69, 162, 88, 96, 97, 68, 105, 138, 107, 125, 111, 52, 63, 64, 65, 66, 0, 70, 72, 43, 46, 47, 54, 55, 86, 161, 89, 94, 130, 122, 44, 48, 56, 79, 82, 84, 114, 0, 136, 123, 115, 121, 109, 131, 133, 134, 135, 144, 156, 110, 160, 163, 179, 182, 185, 191, 198, 192, 0]))
