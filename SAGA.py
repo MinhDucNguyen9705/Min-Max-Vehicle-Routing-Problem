@@ -71,8 +71,8 @@ class GeneticAlgorithm():
         self.k = k          # Số lượng bưu tá
         self.d = d          # Ma trận khoảng cách   
         start = time.time()
-        # self.population = self.generate_greedy_initial_population()+self.generate_greedy_initial_population()
-        self.population = self.generate_initial_population()+self.generate_initial_population()
+        self.population = self.generate_greedy_initial_population()+self.generate_greedy_initial_population()
+        # self.population = self.generate_initial_population()+self.generate_initial_population()
         end = time.time()
         self.time += end-start
 
@@ -400,7 +400,7 @@ class GeneticAlgorithm():
 
 if __name__ == "__main__":
     saga = GeneticAlgorithm(generations=10000, population_size=50, mutation_rate=0.5, keep_parents=10, time_limit=240, T=10000)
-    saga.load_input_file('inputs/belgium-n100-k10.txt')
+    saga.load_input_file('inputs/belgium-n500-k20.txt')
     # saga.load_input_line()
     best_score, best_solution, epochs, best_generation = saga.run(verbose=1)
     # scores = ga.evaluate(10)

@@ -397,8 +397,8 @@ class GeneticAlgorithm():
 
 
 if __name__ == "__main__":
-    ga = GeneticAlgorithm(generations=10000, population_size=500, mutation_rate=0.002, keep_parents=100, time_limit=30)
-    ga.load_input_file("inputs/input10.txt")
+    ga = GeneticAlgorithm(generations=10000, population_size=50, mutation_rate=0.02, keep_parents=10, time_limit=30)
+    ga.load_input_file("inputs/belgium-n500-k20.txt")
     # ga.load_input_line()
     # ga.parse_output()
     best_score, best_solution, epochs, best_generation = ga.run(verbose=1)
