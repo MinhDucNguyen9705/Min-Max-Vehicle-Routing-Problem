@@ -205,7 +205,7 @@ class VRPSolver:
         """
         Perform multiple runs of Simulated Annealing
         """
-        num_runs = 5  # Number of independent runs
+        num_runs = 100  # Number of independent runs
         best_overall_solution = None
         best_overall_cost = float('inf')
         
@@ -247,7 +247,7 @@ def main():
     # print("Best Solution:")
     # for i, route in enumerate(best_solution):
     #     print(f"Vehicle {i+1} route: {route}")
-    # print(f"\nBest Cost: {best_cost}")
+    print(f"\nBest Cost: {best_cost}")
     print(K)
     for vehicle in best_solution:
         print(len(vehicle) + 1)

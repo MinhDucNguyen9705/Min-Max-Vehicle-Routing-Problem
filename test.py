@@ -2,13 +2,15 @@ filename = "test.txt"
 with open(filename, 'r') as f:
     n, k = map(int, f.readline().split())
     nodes = []
-    for i in range (n):
+    for i in range (n+1):
         # print(f.readline().split())
-        id, x, y, name = f.readline().split()
+        id, x, y  = f.readline().split()
         x = float(x)
         y = float(y)
         nodes.append([x, y])
         # print(d)
+
+print(nodes)
 
 from math import radians, cos, sin, asin, sqrt
 def distance(lat1, lat2, lon1, lon2):
@@ -41,13 +43,17 @@ for i in range (len(nodes)):
         if i==j:
             row.append(0)
         else:
-            row.append(distance(nodes[i][0], nodes[j][0], nodes[i][1], nodes[j][1]))
+            # row.append(distance(nodes[i][0], nodes[j][0], nodes[i][1], nodes[j][1]))
+            # print(((nodes[i][0]-nodes[j][0])**2+(nodes[i][1]-nodes[j][1])**0.5))
+            row.append(round(((nodes[i][0]-nodes[j][0])**2+(nodes[i][1]-nodes[j][1])**2)**0.5))
     d.append(row)
+
+print(len(nodes))
 
 print(n, k)
 print(d[0])
 
-with open("inputs/belgium-n50-k10.txt", 'w') as f:
+with open("inputs/CMT10.txt", 'w') as f:
     f.write(f"{n} {k}\n")
     for row in d:
         # Convert each list to a comma-separated string and write to file

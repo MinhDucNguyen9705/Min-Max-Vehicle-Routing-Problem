@@ -70,11 +70,11 @@ class GeneticAlgorithm():
         self.n = n          # Số lượng node
         self.k = k          # Số lượng bưu tá
         self.d = d          # Ma trận khoảng cách   
-        start = time.time()
-        self.population = self.generate_greedy_initial_population()+self.generate_greedy_initial_population()
-        # self.population = self.generate_initial_population()+self.generate_initial_population()
-        end = time.time()
-        self.time += end-start
+        # start = time.time()
+        # self.population = self.generate_greedy_initial_population()
+        # self.population = self.generate_initial_population()
+        # end = time.time()
+        # self.time += end-start
 
     def load_input_line(self):
         n, k = list(map(int, input().split()))
@@ -84,20 +84,27 @@ class GeneticAlgorithm():
         self.n = n          # Số lượng node
         self.k = k          # Số lượng bưu tá
         self.d = d          # Ma trận khoảng cách
-        start = time.time()   
-        self.population = self.generate_greedy_initial_population() + self.generate_greedy_initial_population()
-        end = time.time()
-        self.time = end - start
+        # start = time.time()   
+        # self.population = self.generate_greedy_initial_population()
+        # end = time.time()
+        # self.time = end - start
     #[0, 1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0]
 
     def generate_greedy_initial_population(self):
         population = []
-        for i in range (self.population_size//2):
+        for i in range (self.population_size):
 
-            routes = [[] for _ in range(self.k)]
+            routes = [[0] for _ in range(self.k)]
             unassigned = list(range(1, self.n+1))
             random.shuffle(unassigned)
-            
+            # j = 0
+            # for value in unassigned:
+            #     routes[j].append(value)
+            #     unassigned.remove(value)
+            #     j+=1
+            #     if j==self.k:
+            #         break
+
             while unassigned:
                 for vehicle in range(self.k):
                     if not unassigned:
@@ -120,7 +127,7 @@ class GeneticAlgorithm():
     
     def generate_initial_population(self):
         population = []
-        for i in range (self.population_size//2):
+        for i in range (self.population_size):
             temp = [[] for i in range (self.k)]
             nodes = [i for i in range (1, self.n+1)]
             random.shuffle(nodes)
@@ -349,9 +356,14 @@ class GeneticAlgorithm():
         self.not_increase_epochs = 0                # Số lượng thế hệ không cải thiện điểm số
         self.epochs = 0                             # Số lượng thế hệ hiện tại
         self.best_generation = 0                    # Thế hệ chứa lời giải tốt nhất
+        self.T = 100
+        start = time.time()   
+        self.population = self.generate_greedy_initial_population()
+        end = time.time()
+        self.time = end - start
         for i in range (self.generations):
-            self.T = max(3*2**(-self.epochs/self.generations), 0.3)
-            # self.T = 0.99*self.T
+            # self.T = max(3*2**(-self.epochs/self.generations), 0.3)
+            self.T = max(0.995*self.T, 0.3)
             start = time.time()
             self.population = self.generate_new_population()
             fitnesses = []
@@ -393,36 +405,42 @@ class GeneticAlgorithm():
     def evaluate(self, runs=10):
         scores = []
         for i in range (runs):
-            score, _, _, _ = self.run()
+            self.time = 0
+            score, _, _, _ = self.run(verbose=0)
             scores.append(score)
             print(f"Run {i+1}: Best score: {score}. Number of epochs: {self.epochs}. Time: {self.time}")
         return scores
 
 if __name__ == "__main__":
-    saga = GeneticAlgorithm(generations=10000, population_size=50, mutation_rate=0.5, keep_parents=10, time_limit=240, T=10000)
-    saga.load_input_file('inputs/belgium-n500-k20.txt')
+    saga = GeneticAlgorithm(generations=10000, population_size=50, mutation_rate=0.5, keep_parents=10, time_limit=10, T=100)
+    saga.load_input_file('inputs/E-n22-k4.txt')
     # saga.load_input_line()
     best_score, best_solution, epochs, best_generation = saga.run(verbose=1)
-    # scores = ga.evaluate(10)
-    # scores = np.array(scores)
-    # print(f"Mean: {np.mean(scores)}")
-    # print(f"Std: {np.std(scores)}")
+    # scores = saga.evaluate(10)
+    # mean_score = sum(scores)/len(scores)
+    # print(f"Mean: {mean_score}")
+    # var_score = sum((x - mean_score) ** 2 for x in scores) / len(scores)
+
+    # # Take the square root of variance to get standard deviation
+    # std_score = var_score ** 0.5
+
+    # print(f"Std: {std_score}")
     # print(best_score)
     # print(best_solution)
     # print(epochs)
     # print(f"Best score: {best_score}\nBest solution is {best_solution}\nFound at generation {best_generation}")
-    zero_idx = [i for i in range (len(best_solution)) if best_solution[i] == 0]
+    # zero_idx = [i for i in range (len(best_solution)) if best_solution[i] == 0]
     # print(saga.best_score)
     # print(best_solution)
-    print(saga.k)
-    for i in range (len(zero_idx)-1):
-        print(zero_idx[i+1]-zero_idx[i])
-        toPrint = best_solution[zero_idx[i]:zero_idx[i+1]]
-        for j in range (len(toPrint)):
-            print(toPrint[j], end = " ")
-        print()
-    plt.plot(saga.mean_history)
-    plt.show()
-    plt.plot(saga.all_best_history, color='blue')
-    plt.plot(saga.best_history, color='red')
-    plt.show()
+    # print(saga.k)
+    # for i in range (len(zero_idx)-1):
+    #     print(zero_idx[i+1]-zero_idx[i])
+    #     toPrint = best_solution[zero_idx[i]:zero_idx[i+1]]
+    #     for j in range (len(toPrint)):
+    #         print(toPrint[j], end = " ")
+    #     print()
+    # plt.plot(saga.mean_history)
+    # plt.show()
+    # plt.plot(saga.all_best_history, color='blue')
+    # plt.plot(saga.best_history, color='red')
+    # plt.show()
